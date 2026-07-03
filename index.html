@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STLTH — Coming Soon</title>
+  <meta name="description" content="Real-time macro bias intelligence for traders. Join the waitlist." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:    #3DD9B3;
+      --teal-dk: #1A8C6B;
+      --dark:    #0D1117;
+      --dark2:   #161B22;
+      --dark3:   #1C2330;
+      --border:  #21262D;
+      --muted:   #8B949E;
+      --dim:     #6E7681;
+      --white:   #F0F6FC;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--dark);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND: canvas particle network ── */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Top teal accent bar */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, var(--teal) 40%, var(--teal-dk) 100%);
+    }
+
+    /* ── PAGE ── */
+    .page {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 0 20px;
+    }
+
+    /* ── NAV STRIP ── */
+    .nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 28px 0 0;
+      max-width: 960px; margin: 0 auto; width: 100%;
+    }
+    .logo-wrap {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .logo-text {
+      font-size: 21px; font-weight: 900;
+      color: var(--white); letter-spacing: 2px;
+    }
+    .nav-right {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    /* ── MAIN ── */
+    main {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 60px 0 40px;
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* BADGE */
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(61,217,179,0.3);
+      border-radius: 4px;
+      padding: 5px 14px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 32px;
+      background: rgba(61,217,179,0.06);
+    }
+    .badge-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse-dot 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    /* HEADLINE */
+    h1 {
+      font-size: clamp(34px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      color: var(--white);
+      max-width: 780px;
+      margin-bottom: 22px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--teal);
+    }
+
+    /* SUBHEADING */
+    .sub {
+      font-size: clamp(15px, 2vw, 18px);
+      font-weight: 400;
+      color: var(--muted);
+      max-width: 580px;
+      line-height: 1.7;
+      margin-bottom: 52px;
+    }
+
+    /* ── FEATURE CARDS GRID ── */
+    .features-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 16px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 52px;
+    }
+
+    .feat {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 14px;
+      text-align: left;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .feat:hover {
+      border-color: rgba(61,217,179,0.35);
+      background: var(--dark3);
+    }
+    .feat-name {
+      font-size: 11px; font-weight: 700;
+      color: var(--white);
+      margin-bottom: 5px;
+      letter-spacing: 0.2px;
+    }
+    .feat-desc {
+      font-size: 10px;
+      color: var(--dim);
+      line-height: 1.55;
+    }
+    .feat-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--teal);
+      border-bottom: 1px solid rgba(61,217,179,0.3);
+      padding-bottom: 1px;
+    }
+
+    /* ── FORM ── */
+    .form-wrap {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    form {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    input {
+      width: 100%;
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 13px 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input::placeholder { color: var(--dim); }
+    input:focus {
+      border-color: rgba(61,217,179,0.6);
+      box-shadow: 0 0 0 3px rgba(61,217,179,0.08);
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      background: var(--teal);
+      color: #0B0F14;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+    button[type="submit"]:hover { background: #50E8C2; }
+    button[type="submit"]:active { transform: scale(0.985); }
+    button[type="submit"]:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .note {
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .error-msg {
+      font-size: 12px; color: #F87171;
+      margin-top: 6px; display: none;
+    }
+    .error-msg.show { display: block; }
+
+    /* SUCCESS */
+    .success-wrap {
+      display: none; flex-direction: column;
+      align-items: center; gap: 12px;
+    }
+    .success-wrap.show { display: flex; }
+
+    .success-icon {
+      width: 56px; height: 56px;
+      border: 1.5px solid var(--teal);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      animation: pop-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes pop-in {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .success-title {
+      font-size: 20px; font-weight: 700; color: var(--white);
+    }
+    .success-msg {
+      font-size: 13px; color: var(--muted);
+      max-width: 320px; line-height: 1.6; text-align: center;
+    }
+
+    /* ── FOOTER ── */
+    .foot {
+      max-width: 960px; margin: 0 auto; width: 100%;
+      padding: 20px 0 28px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--dim);
+      flex-wrap: wrap; gap: 8px;
+    }
+    .foot a { color: var(--dim); text-decoration: none; }
+    .foot a:hover { color: var(--muted); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 720px) {
+      .features { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 440px) {
+      .features { grid-template-columns: 1fr 1fr; }
+      h1 { letter-spacing: -1px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+  <div class="top-bar"></div>
+
+  <div class="page">
+
+    <!-- Nav -->
+    <nav class="nav">
+                  <a href="#" class="logo-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="162 310 506 188" height="36" style="display:block"><defs><g/><clipPath id="0d073f36ab"><path d="M 2.464844 92 L 75 92 L 75 179 L 2.464844 179 Z M 2.464844 92 " clip-rule="nonzero"/></clipPath><clipPath id="805939a29d"><path d="M 2.464844 7 L 75 7 L 75 117 L 2.464844 117 Z M 2.464844 7 " clip-rule="nonzero"/></clipPath><clipPath id="ac334ad28f"><path d="M 86 0.960938 L 505.921875 0.960938 L 505.921875 185.039062 L 86 185.039062 Z M 86 0.960938 " clip-rule="nonzero"/></clipPath><clipPath id="091f894cfb"><rect x="0" width="420" y="0" height="186"/></clipPath><clipPath id="70e1af4ca7"><rect x="0" width="506" y="0" height="186"/></clipPath></defs><g transform="matrix(1, 0, 0, 1, 162, 312)"><g clip-path="url(#70e1af4ca7)"><g clip-path="url(#0d073f36ab)"><path fill="#58cfc1" d="M 64.503906 178.355469 L 2.558594 116.410156 L 25.976562 92.996094 L 64.503906 131.523438 C 77.425781 144.445312 77.425781 165.4375 64.503906 178.355469 Z M 64.503906 178.355469 " fill-opacity="1" fill-rule="nonzero"/></g><g clip-path="url(#805939a29d)"><path fill="#13d89d" d="M 64.503906 54.46875 L 2.558594 116.410156 L 2.558594 69.582031 L 64.503906 7.636719 C 77.46875 20.558594 77.46875 41.546875 64.503906 54.46875 Z M 64.503906 54.46875 " fill-opacity="1" fill-rule="nonzero"/></g><g clip-path="url(#ac334ad28f)"><g transform="matrix(1, 0, 0, 1, 86, 0)"><g clip-path="url(#091f894cfb)"><g fill="#ffffff" fill-opacity="1"><g transform="translate(0.489552, 148.058991)"><g><path d="M 47.96875 -40.171875 L 24.75 -45.671875 C 18.332031 -47.203125 13.695312 -49.828125 10.84375 -53.546875 C 7.988281 -57.265625 6.5625 -62.429688 6.5625 -69.046875 C 6.5625 -78.722656 9.335938 -85.851562 14.890625 -90.4375 C 20.441406 -95.019531 29.070312 -97.3125 40.78125 -97.3125 C 45.675781 -97.3125 50.082031 -97.082031 54 -96.625 C 57.925781 -96.164062 61.566406 -95.476562 64.921875 -94.5625 L 64.921875 -82.796875 C 60.648438 -83.816406 56.578125 -84.53125 52.703125 -84.9375 C 48.835938 -85.34375 44.816406 -85.546875 40.640625 -85.546875 C 32.796875 -85.546875 27.296875 -84.398438 24.140625 -82.109375 C 20.984375 -79.816406 19.40625 -75.769531 19.40625 -69.96875 C 19.40625 -66.300781 20.140625 -63.523438 21.609375 -61.640625 C 23.085938 -59.753906 25.507812 -58.40625 28.875 -57.59375 L 51.9375 -52.09375 C 60.082031 -50.15625 65.503906 -47.429688 68.203125 -43.921875 C 70.910156 -40.410156 72.265625 -34.988281 72.265625 -27.65625 C 72.265625 -17.164062 69.535156 -9.726562 64.078125 -5.34375 C 58.628906 -0.96875 50 1.21875 38.1875 1.21875 C 31.976562 1.21875 25.992188 0.8125 20.234375 0 C 14.484375 -0.8125 9.925781 -1.878906 6.5625 -3.203125 L 6.5625 -15.421875 C 11.351562 -14.003906 16.445312 -12.910156 21.84375 -12.140625 C 27.238281 -11.378906 32.6875 -11 38.1875 -11 C 45.832031 -11 51.179688 -12.117188 54.234375 -14.359375 C 57.285156 -16.597656 58.8125 -20.925781 58.8125 -27.34375 C 58.8125 -31.3125 58.070312 -34.1875 56.59375 -35.96875 C 55.125 -37.757812 52.25 -39.160156 47.96875 -40.171875 Z M 47.96875 -40.171875 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(79.316658, 148.058991)"><g><path d="M 78.828125 -95.78125 L 78.828125 -84.015625 L 47.046875 -84.015625 L 47.046875 0 L 34.0625 0 L 34.0625 -84.015625 L 2.296875 -84.015625 L 2.296875 -95.78125 Z M 78.828125 -95.78125 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(162.268432, 148.058991)"><g><path d="M 69.65625 -12.21875 L 69.65625 0 L 11 0 L 11 -95.78125 L 23.984375 -95.78125 L 23.984375 -12.21875 Z M 69.65625 -12.21875 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(236.207046, 148.058991)"><g><path d="M 78.828125 -95.78125 L 78.828125 -84.015625 L 47.046875 -84.015625 L 47.046875 0 L 34.0625 0 L 34.0625 -84.015625 L 2.296875 -84.015625 L 2.296875 -95.78125 Z M 78.828125 -95.78125 "/></g></g></g><g fill="#ffffff" fill-opacity="1"><g transform="translate(319.158832, 148.058991)"><g><path d="M 23.984375 0 L 11 0 L 11 -95.78125 L 23.984375 -95.78125 L 23.984375 -54.53125 L 74.09375 -54.53125 L 74.09375 -95.78125 L 87.078125 -95.78125 L 87.078125 0 L 74.09375 0 L 74.09375 -42.625 L 23.984375 -42.625 Z M 23.984375 0 "/></g></g></g></g></g></g></g></g></svg>
+      </a>
+      <span class="nav-right">tradestlth.com</span>
+    </nav>
+
+    <!-- Main content -->
+    <main>
+
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Launching Soon
+      </div>
+
+      <h1>See what others can't with <em>STLTH</em> and move before they do<em>.</em></h1>
+
+      <p class="sub">
+        Real-time macro bias intelligence across Futures, Forex, Commodities and Bitcoin.
+        Personalised live dashboards, reports and much more — built for traders
+        who want the full picture.
+      </p>
+
+      <!-- Feature grid -->
+      <p class="features-label">What you get on day one</p>
+      <div class="features">
+
+        <div class="feat">
+          <div class="feat-name">AI Macro Desk</div>
+          <div class="feat-desc">Your central command. Every instrument analysed across 12 live data sources and delivered as a single, clean read — direction, confidence, and edge score at a glance.</div>
+          <span class="feat-tag">Core</span>
+        </div>
+
+        <div class="feat">
+          <div class="feat-name">Macro View</div>
+          <div class="feat-desc">The full macro fundamental picture in one page. Cross-instrument themes, correlation map, and global risk narrative.</div>
+          <span class="feat-tag">Overview</span>
+        </div>
+
+        <div class="feat">
+          <div class="feat-name">Instrument Deep Dives</div>
+          <div class="feat-desc">Go deeper on any instrument. Every relevant headline, data release, and macro signal in one place — with an AI-written context paragraph explaining what it all means for your trade.</div>
+          <span class="feat-tag">Analysis</span>
+        </div>
+
+        <div class="feat">
+          <div class="feat-name">Economic Calendar</div>
+          <div class="feat-desc">Live High and Medium impact events with countdown timers, instrument impact notes and status badges.</div>
+          <span class="feat-tag">Calendar</span>
+        </div>
+
+        <div class="feat">
+          <div class="feat-name">Session Reports</div>
+          <div class="feat-desc">End-of-session bias summary. How each instrument shifted through the day — downloadable PDF.</div>
+          <span class="feat-tag">Reports</span>
+        </div>
+
+        <div class="feat">
+          <div class="feat-name">Edge Score Alerts</div>
+          <div class="feat-desc">Set your threshold. Get notified by email or Telegram when an instrument hits your required edge level.</div>
+          <span class="feat-tag">Alerts</span>
+        </div>
+
+        <div class="feat">
+          <div class="feat-name">Favourites</div>
+          <div class="feat-desc">Pin your instruments. Your dashboard opens with your pairs at the top — personalised every session.</div>
+          <span class="feat-tag">Personalised</span>
+        </div>
+
+        <div class="feat">
+          <div class="feat-name">Session Brief</div>
+          <div class="feat-desc">Three-sentence AI macro summary generated at analysis time. The read before the read.</div>
+          <span class="feat-tag">AI</span>
+        </div>
+
+      </div>
+
+      <!-- Form -->
+      <div class="form-wrap">
+        <form id="waitlist-form">
+          <input type="text"  name="name"  placeholder="First name"     required autocomplete="given-name" />
+          <input type="email" name="email" placeholder="Email address"  required autocomplete="email" />
+          <button type="submit" id="submit-btn">Join the Waitlist</button>
+          <p class="error-msg" id="error-msg">Something went wrong — please try again.</p>
+        </form>
+
+        <div class="success-wrap" id="success-wrap">
+          <div class="success-icon">&#10003;</div>
+          <div class="success-title">You're on the list.</div>
+          <p class="success-msg">We'll email you the moment STLTH goes live. Be ready to trade with context.</p>
+        </div>
+
+        <p class="note">No spam. Just your launch notification.</p>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="foot">
+      <span>© 2026 STLTH &nbsp;·&nbsp; No hype. No noise. Just bias.</span>
+      <span>
+        <a href="#">Privacy</a> &nbsp;·&nbsp;
+        <a href="#">Terms</a>
+      </span>
+    </footer>
+
+  </div>
+
+  <script>
+    /* ── PARTICLE NETWORK BACKGROUND ── */
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx    = canvas.getContext('2d');
+      const COUNT  = 72;
+      const DIST   = 155;
+      let W, H, pts;
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function initPts() {
+        pts = Array.from({ length: COUNT }, () => ({
+          x:  Math.random() * W,
+          y:  Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.28,
+          vy: (Math.random() - 0.5) * 0.28,
+          r:  Math.random() * 1.2 + 0.4
+        }));
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, W, H);
+
+        for (let i = 0; i < COUNT; i++) {
+          const p = pts[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0)  p.x = W;
+          if (p.x > W)  p.x = 0;
+          if (p.y < 0)  p.y = H;
+          if (p.y > H)  p.y = 0;
+
+          /* dot */
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(61,217,179,0.55)';
+          ctx.fill();
+
+          /* connections */
+          for (let j = i + 1; j < COUNT; j++) {
+            const q  = pts[j];
+            const dx = p.x - q.x;
+            const dy = p.y - q.y;
+            const d  = Math.sqrt(dx * dx + dy * dy);
+            if (d < DIST) {
+              const a = (1 - d / DIST) * 0.2;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.strokeStyle = `rgba(61,217,179,${a})`;
+              ctx.lineWidth   = 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      resize();
+      initPts();
+      tick();
+      window.addEventListener('resize', () => { resize(); initPts(); });
+    })();
+  </script>
+
+  <script>
+    const form    = document.getElementById('waitlist-form');
+    const btn     = document.getElementById('submit-btn');
+    const success = document.getElementById('success-wrap');
+    const errMsg  = document.getElementById('error-msg');
+
+    // ─────────────────────────────────────────────────────────────────
+    // SETUP (5 min):
+    //   1. Go to formspree.io → sign up free → New Form
+    //   2. Replace the URL below with your endpoint, e.g.:
+    //      https://formspree.io/f/xabcdefg
+    // ─────────────────────────────────────────────────────────────────
+    const ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errMsg.classList.remove('show');
+      const name  = form.name.value.trim();
+      const email = form.email.value.trim();
+      if (!name || !email) return;
+      btn.disabled    = true;
+      btn.textContent = 'Submitting...';
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+        if (res.ok) {
+          form.style.display = 'none';
+          success.classList.add('show');
+        } else { throw new Error(); }
+      } catch (_) {
+        errMsg.classList.add('show');
+        btn.disabled    = false;
+        btn.textContent = 'Join the Waitlist';
+      }
+    });
+  </script>
+
+</body>
+</html>
